@@ -11,6 +11,11 @@ namespace PRN211_Grocery_store.Data
         public ApplicationDBContext()
         {
         }
+
+        public ApplicationDBContext(DbContextOptions<ApplicationDBContext> options)
+            : base(options)
+        {
+        }
         public DbSet<User> Users { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
