@@ -28,7 +28,7 @@ namespace PRN211_Grocery_store.Data
                                         .SetBasePath(Directory.GetCurrentDirectory())
                                         .AddJsonFile("appsettings.json", true, true)
                                         .Build();
-                ConnectionString = config["ConnectionString:PRN211"];
+                ConnectionString = config["ConnectionStrings:PRN211"];
                 optionsBuilder.UseSqlServer(ConnectionString);
             }
         }

@@ -4,11 +4,11 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
     @foreach(var p in product){
         <p>@p.id</p>
         <p>@p.name</p>
         <p>@p.price</p>
+        <img src="@p.imageURL" alt="@p.id"/>
     }
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>

@@ -11,6 +11,7 @@ namespace PRN211_Grocery_store.Data.Entity
         public string name { get; set; }
         public decimal price { get; set; }
         public int quantity { get; set; }
+        public string imageURL { get; set; }
         public virtual Category Category { get; set; }
     }
 }

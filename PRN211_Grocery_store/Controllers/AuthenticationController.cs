@@ -27,7 +27,7 @@ namespace PRN211_Grocery_store.Controllers
             {
                 return RedirectToAction("Index", "Products");
             }
-            return View();
+            return View("Index", "Home");
         }
 
         [AllowAnonymous]
