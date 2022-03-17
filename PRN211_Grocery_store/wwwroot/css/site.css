@@ -69,3 +69,15 @@ body {
   white-space: nowrap;
   line-height: 60px; /* Vertically center the text there */
 }
+
+/* Cart item*/
+.cart-img{
+    width:100px;
+    height:100px
+}
+
+/*Product item*/
+.product-img {
+    width: 400px;
+    height: 400px
+}

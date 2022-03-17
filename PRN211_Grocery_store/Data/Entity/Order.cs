@@ -19,7 +19,6 @@ namespace PRN211_Grocery_store.Data.Entity
         [Required]
         [StringLength(100)]
         public string status { get; set; }
-
         public virtual ICollection<Order> products { get; set; }
     }
 }

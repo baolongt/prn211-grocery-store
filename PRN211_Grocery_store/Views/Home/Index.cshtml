@@ -3,12 +3,21 @@
     var product = ViewBag.products as List<PRN211_Grocery_store.Data.Entity.Product>;
 }
 
-<div class="text-center">
+<div class="text-center d-flex flex-row">
     @foreach(var p in product){
-        <p>@p.id</p>
-        <p>@p.name</p>
-        <p>@p.price</p>
-        <img src="@p.imageURL" alt="@p.id"/>
+        <div class="card col-3">
+            <img class="card-img-top" src="@p.imageURL" alt="@p.id"/>
+            <div class="card-body">
+                <p>@p.name</p>
+                <p>@p.price</p>
+                @if (p.quantity > 0)
+                {
+                    using(Html.BeginForm("AddToCart", "Home", new {@productId = p.id}, FormMethod.Post))
+                    {
+                        <button type="submit" class="btn btn-danger">Add to Cart</button>
+                    }
+                }
+            </div>
+        </div>
     }
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>

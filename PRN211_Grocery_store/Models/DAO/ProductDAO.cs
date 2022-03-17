@@ -38,5 +38,21 @@ namespace PRN211_Grocery_store.Models.DAO
             }
             return products;
         }
+
+        public Product GetProductById(int productId)
+        {
+            Product product = null;
+            try
+            {
+                using (var context = new ApplicationDBContext())
+                {
+                    product = context.Products.Find(productId);
+                }
+            }catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return product;
+        }
     }
 }
