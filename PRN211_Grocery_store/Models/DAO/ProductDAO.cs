@@ -24,13 +24,12 @@ namespace PRN211_Grocery_store.Models.DAO
 
         public List<Product> GetProducts()
         {
-            List<Product> products = new List<Product>();
+            List<Product> products = new();
             try
             {
                 using (var context = new ApplicationDBContext()) {
                     products = context.Products.ToList();
                 }
-
             }
             catch (Exception ex)
             {

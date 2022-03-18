@@ -6,19 +6,24 @@ namespace PRN211_Grocery_store.Data.Entity
 {
     public class Order
     {
+
+        public Order()
+        {
+        }
+
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [Required]
-        public DateTime createdDate { get; set; }
+        public DateTime CreatedDate { get; set; }
 
         [Required]
         [StringLength(100)]
-        public String username { get; set; }
+        public String Username { get; set; }
 
         [Required]
         [StringLength(100)]
-        public string status { get; set; }
-        public virtual ICollection<Order> products { get; set; }
+        public string Status { get; set; }
+        public ICollection<OrderDetail> OrderDetails { get; set; }
     }
 }

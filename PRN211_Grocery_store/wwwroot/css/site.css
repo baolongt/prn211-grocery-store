@@ -75,7 +75,9 @@ body {
     width:100px;
     height:100px
 }
-
+.cart-quantity{
+    width: 50px!important;
+}
 /*Product item*/
 .product-img {
     width: 400px;

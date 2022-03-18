@@ -2,6 +2,19 @@
 @{
     ViewData["Title"] = "Cart";
 }
+@functions{
+    public string calculateTotal(){
+        decimal total = 0;
+        if (Model != null)
+        {
+           @foreach (var item in Model)
+           {
+                total += (item.Product.Price * item.Quantity);  
+            }
+        }
+        return total.ToString();
+    }
+}
 <h1>Your cart</h1>
 @if(Model != null && Model.Count() > 0){
     <table class="table">
@@ -22,32 +35,73 @@
             <th>
                 Total
             </th>
+            <th>
+                Action
+            </th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model) {
             <tr>
                 <td>
-                    <img class="cart-img" src="@item.Product.imageURL" alt="@item.Product.id"/>
+                    <img class="cart-img" src="@item.Product.ImageURL" alt="@item.Product.Id"/>
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Product.name)
+                    @Html.DisplayFor(modelItem => item.Product.Name)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Product.price)
+                    @Html.DisplayFor(modelItem => item.Product.Price)
+                </td>
+                <td class="d-flex flex-center">
+                        @using(Html.BeginForm("DecreaseQuantity", "Home", new {@productId = item.Product.Id}, FormMethod.Post))
+                        {
+                            <button class="btn btn-outline-secondary btn-sm">
+                                <i  class="fa-solid fa-minus"></i>
+                            </button>
+                        }
+                        <input class="form-control form-control-sm cart-quantity" type="text" value="@Html.DisplayFor(modelItem => item.Quantity)" disabled/> 
+                        @using(Html.BeginForm("IncreaseQuantity", "Home", new {@productId = item.Product.Id}, FormMethod.Post))
+                        {
+                            <button class="btn btn-outline-secondary btn-sm">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                        }
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Quantity)
+                    <div>
+                        @(@item.Quantity * @item.Product.Price)
+                    </div>
                 </td>
                 <td>
-                    @(@item.Quantity * @item.Product.price)
+                        @using(Html.BeginForm("RemoveFromCart", "Home", new {@productId = item.Product.Id}, FormMethod.Post))
+                        {
+                            <button type="submit" class="btn btn-outline-danger">Remove</button>
+                        }
                 </td>
-
             </tr>
         }
     </tbody>
+    <tfoot>
+        <tr class="h4">
+            <td class="text-bold"></td>
+            <td class="text-bold"></td>
+            <td class="text-bold"></td>
+            <td class="text-bold">Total: </td>
+            <td>
+                  @calculateTotal()
+            </td>
+            <td>
+                    @using(Html.BeginForm("Checkout", "Home", FormMethod.Post))
+                    {
+                        <button class="btn btn-outline-primary">
+                            Checkout
+                        </button>
+                    }
+            </td>
+        </tr>
+    </tfoot>
     </table>
 }
 else {
-    <h1>There is no item in cart</h1>
+    <h3 class="text-muted">There is no item in cart</h3>
 }

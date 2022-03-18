@@ -46,8 +46,8 @@ namespace PRN211_Grocery_store.Controllers
                 ViewData["Email"] = email;
                 var user = _context.Users
                     .SingleOrDefault(user =>
-                                user.email.ToLower().Equals(email.ToLower())
-                                && user.password.Equals(password));
+                                user.Email.ToLower().Equals(email.ToLower())
+                                && user.Password.Equals(password));
 
                 if (user == null)
                 {
@@ -57,8 +57,8 @@ namespace PRN211_Grocery_store.Controllers
                 var userClaims = new List<Claim>()
                 {
                     new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                    new Claim(ClaimTypes.Email, user.email),
-                    new Claim(ClaimTypes.Name, user.name)
+                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim(ClaimTypes.Name, user.Name)
                 };
                 var userIdentity = new ClaimsIdentity(userClaims, "User Identity");
                 var userPrincipal = new ClaimsPrincipal(new[] { userIdentity });

@@ -11,18 +11,21 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Session;
 using Microsoft.AspNetCore.Http;
-
+using PRN211_Grocery_store.Data.Entity;
+using PRN211_Grocery_store.Utils;
 namespace PRN211_Grocery_store.Controllers
 {
     public class HomeController : Controller
     {
         ProductRepository productRepository;
+        OrderRepository orderRepository;
         private readonly ILogger<HomeController> _logger;
 
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
             productRepository = new ProductRepository();
+            orderRepository = new OrderRepository();
         }
 
         public IActionResult Index()
@@ -60,7 +63,7 @@ namespace PRN211_Grocery_store.Controllers
             }
 
             // check product in cart
-            Item item = cart.FirstOrDefault(x => x.Product.id == productId);
+            Item item = cart.FirstOrDefault(x => x.Product.Id == productId);
             if (item != null)
             {
                 ++item.Quantity;
@@ -81,8 +84,64 @@ namespace PRN211_Grocery_store.Controllers
         public IActionResult RemoveFromCart(int productId)
         {
             List<Item> cart = (List<Item>)JsonConvert.DeserializeObject<IEnumerable<Item>>(HttpContext.Session.GetString("cart"));
-            Item item = cart.FirstOrDefault(x => x.Product.id == productId);
+            Item item = cart.FirstOrDefault(x => x.Product.Id == productId);
+            if (item != null)
+            {
+                cart.Remove(item);
+            }
+            // set cart to session
+            HttpContext.Session.SetString("cart", JsonConvert.SerializeObject(cart));
             return RedirectToAction("Cart");
+        }
+
+        public IActionResult IncreaseQuantity(int productId)
+        {
+            List<Item> cart = (List<Item>)JsonConvert.DeserializeObject<IEnumerable<Item>>(HttpContext.Session.GetString("cart"));
+            Item item = cart.FirstOrDefault(x => x.Product.Id == productId);
+            if (item != null)
+            {
+                ++item.Quantity;
+            }
+            // set cart to session
+            HttpContext.Session.SetString("cart", JsonConvert.SerializeObject(cart));
+            return RedirectToAction("Cart");
+        }
+
+        public IActionResult DecreaseQuantity(int productId)
+        {
+            List<Item> cart = (List<Item>)JsonConvert.DeserializeObject<IEnumerable<Item>>(HttpContext.Session.GetString("cart"));
+            Item item = cart.FirstOrDefault(x => x.Product.Id == productId);
+            if (item != null)
+            {
+                if (item.Quantity > 1)
+                {
+                    --item.Quantity;
+                }
+                else
+                {
+                    cart.Remove(item);
+                }
+            }
+            // set cart to session
+            HttpContext.Session.SetString("cart", JsonConvert.SerializeObject(cart));
+            return RedirectToAction("Cart");
+        }
+
+        public IActionResult Checkout()
+        {
+            List<Item> cart = (List<Item>)JsonConvert.DeserializeObject<IEnumerable<Item>>(HttpContext.Session.GetString("cart"));
+            Order order = new()
+            {
+                Username = "test123",
+                CreatedDate = DateTime.Now,
+                Status = "Pending",
+                OrderDetails = CartMapper.Instance.MapToOrderDetail(cart)
+            };
+            orderRepository.AddNew(order);
+            // delete cart
+            cart.Clear();
+            HttpContext.Session.SetString("cart", JsonConvert.SerializeObject(cart));
+            return RedirectToAction("Index");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -90,5 +149,6 @@ namespace PRN211_Grocery_store.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
     }
 }

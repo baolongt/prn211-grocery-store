@@ -9,22 +9,22 @@ namespace PRN211_Grocery_store.Data.Entity
         public int Id { get; set; }
         [Required]
         [StringLength(100)]
-        public string password { get; set; }
+        public string Password { get; set; }
 
         [Required]
         [StringLength(100)]
-        public string name { get; set; }
+        public string Name { get; set; }
 
         [Required]
         [StringLength(100)]
-        public string email { get; set; }
+        public string Email { get; set; }
 
         [Required]
         [StringLength(100)]
-        public string phone { get; set; }
+        public string Phone { get; set; }
 
         [Required]
         [StringLength(100)]
-        public bool role { get; set; }
+        public bool Role { get; set; }
     }
 }

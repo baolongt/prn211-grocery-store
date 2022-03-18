@@ -16,10 +16,11 @@ namespace PRN211_Grocery_store.Data
             : base(options)
         {
         }
-        public DbSet<User> Users { get; set; }
-        public DbSet<Product> Products { get; set; }
-        public DbSet<Category> Categories { get; set; }
-        public DbSet<Order> Orders { get; set; }
+        public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<Product> Products { get; set; }
+        public virtual DbSet<Category> Categories { get; set; }
+        public virtual DbSet<Order> Orders { get; set; }
+        public virtual DbSet<OrderDetail> OrderDetails { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -39,6 +40,11 @@ namespace PRN211_Grocery_store.Data
             modelBuilder.Entity<User>().ToTable("User");
             modelBuilder.Entity<Order>().ToTable("Order");
             modelBuilder.Entity<Category>().ToTable("Category");
+            modelBuilder.Entity<OrderDetail>().ToTable("OrderDetail");
+            modelBuilder.Entity<OrderDetail>().HasKey(od => new {
+                od.OrderId,
+                od.ProductId
+            });
         }
     }
 }

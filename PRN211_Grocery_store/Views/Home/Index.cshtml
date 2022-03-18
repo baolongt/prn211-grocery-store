@@ -3,16 +3,22 @@
     var product = ViewBag.products as List<PRN211_Grocery_store.Data.Entity.Product>;
 }
 
+<div>
+    <div>
+        
+    </div>
+</div>
+
 <div class="text-center d-flex flex-row">
     @foreach(var p in product){
         <div class="card col-3">
-            <img class="card-img-top" src="@p.imageURL" alt="@p.id"/>
+            <img class="card-img-top" src="@p.ImageURL" alt="@p.Id"/>
             <div class="card-body">
-                <p>@p.name</p>
-                <p>@p.price</p>
-                @if (p.quantity > 0)
+                <p>@p.Name</p>
+                <p>@p.Price</p>
+                @if (p.Quantity > 0)
                 {
-                    using(Html.BeginForm("AddToCart", "Home", new {@productId = p.id}, FormMethod.Post))
+                    using(Html.BeginForm("AddToCart", "Home", new {@productId = p.Id}, FormMethod.Post))
                     {
                         <button type="submit" class="btn btn-danger">Add to Cart</button>
                     }
