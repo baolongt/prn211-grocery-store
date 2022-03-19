@@ -25,7 +25,8 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        @if(isAdmin){
+                        @if (isAdmin)
+                        {
                             <li>
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Orders" asp-action="Index">Order</a>
                             </li>
@@ -39,16 +40,19 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Authentication" asp-action="Logout">Logout</a>
                             </li>
                         }
-                        else {
+                        else
+                        {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Cart">
-                                    Cart @if(itemNum > 0){<span class="text-primary">(@itemNum)</span>}
+                                    Cart @if (itemNum > 0)
+                                    {<span class="text-primary">(@itemNum)</span>}
                                 </a>
                             </li>
-                            @if(username != null && !isAdmin){
+                            @if (username != null && !isAdmin)
+                            {
                                 <li>
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Orders" asp-action="Index">My Order</a>
                                 </li>
@@ -65,8 +69,11 @@
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Authentication" asp-action="Index">Login</a>
                                 </li>
                             }
+                            <li>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Register" asp-action="Register">Register</a>
+                            </li>
                         }
-                        
+
                     </ul>
                 </div>
             </div>
