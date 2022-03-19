@@ -26,15 +26,11 @@ namespace PRN211_Grocery_store.Controllers
         }
 
         // GET: Users/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details()
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
+            // TODO get user from session
             var user = await _context.Users
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.Username == "test123");
             if (user == null)
             {
                 return NotFound();
@@ -54,7 +50,7 @@ namespace PRN211_Grocery_store.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,password,name,email,phone,role")] User user)
+        public async Task<IActionResult> Create([Bind("Username,Password,Name,Email,Phone,IsAdmin")] User user)
         {
             if (ModelState.IsValid)
             {
@@ -66,7 +62,7 @@ namespace PRN211_Grocery_store.Controllers
         }
 
         // GET: Users/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
             {
@@ -86,9 +82,9 @@ namespace PRN211_Grocery_store.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,password,name,email,phone,role")] User user)
+        public async Task<IActionResult> Edit(string id, [Bind("Username,Password,Name,Email,Phone,IsAdmin")] User user)
         {
-            if (id != user.Id)
+            if (id != user.Username)
             {
                 return NotFound();
             }
@@ -102,7 +98,7 @@ namespace PRN211_Grocery_store.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!UserExists(user.Id))
+                    if (!UserExists(user.Username))
                     {
                         return NotFound();
                     }
@@ -117,7 +113,7 @@ namespace PRN211_Grocery_store.Controllers
         }
 
         // GET: Users/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
             {
@@ -125,7 +121,7 @@ namespace PRN211_Grocery_store.Controllers
             }
 
             var user = await _context.Users
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.Username == id);
             if (user == null)
             {
                 return NotFound();
@@ -137,7 +133,7 @@ namespace PRN211_Grocery_store.Controllers
         // POST: Users/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var user = await _context.Users.FindAsync(id);
             _context.Users.Remove(user);
@@ -145,9 +141,9 @@ namespace PRN211_Grocery_store.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool UserExists(int id)
+        private bool UserExists(string id)
         {
-            return _context.Users.Any(e => e.Id == id);
+            return _context.Users.Any(e => e.Username == id);
         }
     }
 }

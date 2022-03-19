@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<PRN211_Grocery_store.Models.ViewModel.Item>
+
 @{
     ViewData["Title"] = "Cart";
 }
@@ -60,9 +61,17 @@
                             </button>
                         }
                         <input class="form-control form-control-sm cart-quantity" type="text" value="@Html.DisplayFor(modelItem => item.Quantity)" disabled/> 
-                        @using(Html.BeginForm("IncreaseQuantity", "Home", new {@productId = item.Product.Id}, FormMethod.Post))
+                        @if(item.Product.Quantity > item.Quantity){
+                            using(Html.BeginForm("IncreaseQuantity", "Home", new {@productId = item.Product.Id}, FormMethod.Post))
+                                {
+                                    <button class="btn btn-outline-secondary btn-sm">
+                                        <i class="fa-solid fa-plus"></i>
+                                    </button>
+                            }
+                        }
+                        else
                         {
-                            <button class="btn btn-outline-secondary btn-sm">
+                            <button class="btn btn-outline-secondary btn-sm" disabled>
                                 <i class="fa-solid fa-plus"></i>
                             </button>
                         }

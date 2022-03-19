@@ -7,7 +7,7 @@ namespace PRN211_Grocery_store.Models.Repository
     public class ProductRepository : IProductRepository
     {
         public Product GetProductById(int id) => ProductDAO.Instance.GetProductById(id);
-
         public IList<Product> GetProducts() => ProductDAO.Instance.GetProducts();
+        public void Update(Product product) => ProductDAO.Instance.Update(product);
     }
 }

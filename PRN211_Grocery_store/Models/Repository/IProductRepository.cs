@@ -8,5 +8,6 @@ namespace PRN211_Grocery_store.Models.Repository
     {
         public IList<Product> GetProducts();
         public Product GetProductById(int id);
+        public void Update(Product product);
     }
 }

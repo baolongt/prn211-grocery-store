@@ -66,7 +66,10 @@ namespace PRN211_Grocery_store.Controllers
             Item item = cart.FirstOrDefault(x => x.Product.Id == productId);
             if (item != null)
             {
-                ++item.Quantity;
+                if (item.Product.Quantity > item.Quantity)
+                {
+                    ++item.Quantity;
+                }
             }
             else
             {
@@ -130,6 +133,7 @@ namespace PRN211_Grocery_store.Controllers
         public IActionResult Checkout()
         {
             List<Item> cart = (List<Item>)JsonConvert.DeserializeObject<IEnumerable<Item>>(HttpContext.Session.GetString("cart"));
+            // add new order
             Order order = new()
             {
                 Username = "test123",
@@ -138,6 +142,13 @@ namespace PRN211_Grocery_store.Controllers
                 OrderDetails = CartMapper.Instance.MapToOrderDetail(cart)
             };
             orderRepository.AddNew(order);
+            // decrease item's quantity
+            foreach (Item item in cart)
+            {
+                Product product = item.Product;
+                product.Quantity -= item.Quantity;
+                productRepository.Update(product);
+            }
             // delete cart
             cart.Clear();
             HttpContext.Session.SetString("cart", JsonConvert.SerializeObject(cart));

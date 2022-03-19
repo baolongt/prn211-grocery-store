@@ -5,8 +5,8 @@ namespace PRN211_Grocery_store.Data.Entity
 {
     public class User
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        [Key]
+        public string Username { get; set; }
         [Required]
         [StringLength(100)]
         public string Password { get; set; }
@@ -25,6 +25,6 @@ namespace PRN211_Grocery_store.Data.Entity
 
         [Required]
         [StringLength(100)]
-        public bool Role { get; set; }
+        public bool IsAdmin { get; set; }
     }
 }

@@ -53,5 +53,21 @@ namespace PRN211_Grocery_store.Models.DAO
             }
             return product;
         }
+
+        public void Update(Product product)
+        {
+            try
+            {
+                using (var context = new ApplicationDBContext())
+                {
+                    context.Products.Update(product);
+                    context.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

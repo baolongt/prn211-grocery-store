@@ -56,7 +56,7 @@ namespace PRN211_Grocery_store.Controllers
 
                 var userClaims = new List<Claim>()
                 {
-                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                    new Claim(ClaimTypes.NameIdentifier , user.Username),
                     new Claim(ClaimTypes.Email, user.Email),
                     new Claim(ClaimTypes.Name, user.Name)
                 };

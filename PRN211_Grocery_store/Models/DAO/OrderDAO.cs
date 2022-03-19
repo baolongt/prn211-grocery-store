@@ -22,6 +22,23 @@ namespace PRN211_Grocery_store.Models.DAO
             }
         }
 
+        public List<Order> GetOrderByUsername(string username)
+        {
+            List<Order> orders = new List<Order>();
+            try
+            {
+                using (var context = new ApplicationDBContext())
+                {
+                    orders = context.Orders.Include(c => c.OrderDetails).Where(o => o.Username.Equals(username)).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return orders;
+        }
+
         public List<Order> GetAll ()
         {
             List<Order> orders = new();
@@ -29,7 +46,7 @@ namespace PRN211_Grocery_store.Models.DAO
             {
                 using (var context = new ApplicationDBContext())
                 { 
-                    orders = context.Orders.ToList();
+                    orders = context.Orders.Include(c => c.OrderDetails).ToList();
                 }
             }
             catch (Exception ex)
@@ -46,7 +63,10 @@ namespace PRN211_Grocery_store.Models.DAO
             {
                 using (var context = new ApplicationDBContext())
                 {
-                    order = context.Orders.SingleOrDefault(m => m.Id == orderID);
+                    order = context.Orders
+                        .Include(c => c.OrderDetails)
+                        .ThenInclude(od => od.Product)
+                        .SingleOrDefault(m => m.Id == orderID);
                 }
             }
             catch (Exception ex)
