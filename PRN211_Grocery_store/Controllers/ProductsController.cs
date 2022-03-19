@@ -20,7 +20,7 @@ namespace PRN211_Grocery_store.Controllers
             _context = context;
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         // GET: Products
         public async Task<IActionResult> Index()
         {
@@ -29,6 +29,7 @@ namespace PRN211_Grocery_store.Controllers
         }
 
         // GET: Products/Details/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -47,7 +48,7 @@ namespace PRN211_Grocery_store.Controllers
             return View(product);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         // GET: Products/Create
         public IActionResult Create()
         {
@@ -55,11 +56,46 @@ namespace PRN211_Grocery_store.Controllers
             return View();
         }
 
+        [Authorize(Roles = "Admin")]
+        public IActionResult Enable(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            Product product = _context.Products.Find(id);
+            if (product != null)
+            {
+                product.IsDelete = false;
+                _context.Products.Update(product);
+                _context.SaveChanges();
+            }
+            return RedirectToAction("Index");
+        }
+
+        [Authorize(Roles = "Admin")]
+        public IActionResult Disable(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            Product product = _context.Products.Find(id);
+            if (product != null)
+            {
+                product.IsDelete = true;
+                _context.Products.Update(product);
+                _context.SaveChanges();
+            }
+            return RedirectToAction("Index");
+        }
+
         // POST: Products/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([Bind("id,categoryId,name,price,quantity")] Product product)
         {
             if (ModelState.IsValid)
@@ -72,7 +108,7 @@ namespace PRN211_Grocery_store.Controllers
             return View(product);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         // GET: Products/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -90,7 +126,7 @@ namespace PRN211_Grocery_store.Controllers
             return View(product);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         // POST: Products/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -127,7 +163,7 @@ namespace PRN211_Grocery_store.Controllers
             return View(product);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         // GET: Products/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -147,7 +183,7 @@ namespace PRN211_Grocery_store.Controllers
             return View(product);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         // POST: Products/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
