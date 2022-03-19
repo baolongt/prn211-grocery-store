@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -19,18 +21,21 @@ namespace PRN211_Grocery_store.Controllers
             _context = context;
         }
 
+        [Authorize]
         // GET: Users
         public async Task<IActionResult> Index()
         {
             return View(await _context.Users.ToListAsync());
         }
 
+        [Authorize]
         // GET: Users/Details/5
         public async Task<IActionResult> Details()
         {
             // TODO get user from session
+            string username = HttpContext.Session.GetString("username");
             var user = await _context.Users
-                .FirstOrDefaultAsync(m => m.Username == "test123");
+                .FirstOrDefaultAsync(m => m.Username.Equals(username));
             if (user == null)
             {
                 return NotFound();
@@ -39,12 +44,14 @@ namespace PRN211_Grocery_store.Controllers
             return View(user);
         }
 
+        [Authorize]
         // GET: Users/Create
         public IActionResult Create()
         {
             return View();
         }
 
+        [Authorize]
         // POST: Users/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -61,6 +68,7 @@ namespace PRN211_Grocery_store.Controllers
             return View(user);
         }
 
+        [Authorize]
         // GET: Users/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
@@ -77,6 +85,7 @@ namespace PRN211_Grocery_store.Controllers
             return View(user);
         }
 
+        [Authorize]
         // POST: Users/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -112,6 +121,7 @@ namespace PRN211_Grocery_store.Controllers
             return View(user);
         }
 
+        [Authorize]
         // GET: Users/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
@@ -130,6 +140,7 @@ namespace PRN211_Grocery_store.Controllers
             return View(user);
         }
 
+        [Authorize]
         // POST: Users/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

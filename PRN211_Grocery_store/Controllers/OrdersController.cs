@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -14,17 +16,19 @@ namespace PRN211_Grocery_store.Controllers
     {
         private readonly ApplicationDBContext _context;
         private OrderRepository _orderRepository;
+
         public OrdersController(ApplicationDBContext context)
         {
             _context = context;
             _orderRepository = new OrderRepository();
         }
 
+        [Authorize]
         // GET: Orders
         public async Task<IActionResult> Index()
         {
-            //TODO: Change username - get from session
-            return View(_orderRepository.GetOrderByUsername("test123"));
+            string username = HttpContext.Session.GetString("username");
+            return View(_orderRepository.GetOrderByUsername(username));
         }
 
         // GET: Orders/Details/5

@@ -69,5 +69,22 @@ namespace PRN211_Grocery_store.Models.DAO
                 throw new Exception(ex.Message);
             }
         }
+
+        public List<Product> SearchProduct(string productName)
+        {
+            List<Product> products = new();
+            try
+            {
+                using (var context = new ApplicationDBContext())
+                {
+                    products = context.Products.Where(p => p.Name.Contains(productName)).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return products;
+        }
     }
 }

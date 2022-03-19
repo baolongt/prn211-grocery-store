@@ -3,14 +3,21 @@
     var product = ViewBag.products as List<PRN211_Grocery_store.Data.Entity.Product>;
 }
 
-<div>
-    <div>
-        
-    </div>
+<div class="d-flex justify-content-center mb-5">
+   <form asp-action="Search" class="col-12 row" method="POST">
+        <div class="offset-1 col-8">
+            <input id="searchValue" name="searchValue" type="text" class="form-control" value="@ViewData["searchValue"]"/>
+        </div>
+        <div class="col-2">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+    </form>
 </div>
 
-<div class="text-center d-flex flex-row">
-    @foreach(var p in product){
+<div class="text-center row">
+    @if (product.Count > 0)
+    {
+        foreach(var p in product){
         <div class="card col-3">
             <img class="card-img-top" src="@p.ImageURL" alt="@p.Id"/>
             <div class="card-body">
@@ -28,6 +35,12 @@
                     <button class="btn btn-outline-danger" disabled>Out of stock</button>
                 }
             </div>
-        </div>
+            </div>
+        }
     }
+    else
+    {
+        <p class="text-secondary h4">There is no item contain @ViewData["searchValue"]</p>
+    }
+
 </div>

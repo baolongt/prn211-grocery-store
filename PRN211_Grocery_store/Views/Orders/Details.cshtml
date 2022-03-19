@@ -16,8 +16,6 @@
         return total.ToString();
     }
 }
-<h1>Details</h1>
-
 <div>
     <div>
         <a asp-action="Index">Back to List</a>
@@ -51,6 +49,7 @@
                 <tbody>
                     @foreach (OrderDetail detail in (ViewBag.details as ICollection<OrderDetail>))
                     {
+                        <tr>
                         <td>
                             <img class="cart-img" src="@detail.Product.ImageURL" alt="@detail.ProductId"/>
                         </td>
@@ -68,6 +67,7 @@
                                 @(@detail.Quantity * @detail.Price)
                             </div>
                          </td>
+                         </tr>
                     }
                 </tbody>
                 <tfoot>

@@ -8,7 +8,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using PRN211_Grocery_store.Data;
-
+using Microsoft.AspNetCore.Http;
 namespace PRN211_Grocery_store.Controllers
 {
     public class AuthenticationController : Controller
@@ -39,7 +39,7 @@ namespace PRN211_Grocery_store.Controllers
         {
             if (User.Identity != null && User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("Index", "Products");
+                return RedirectToAction("Index", "Home");
             }
             try
             {
@@ -53,7 +53,7 @@ namespace PRN211_Grocery_store.Controllers
                 {
                     throw new Exception("Login failed!! Please try again.");
                 }
-
+                HttpContext.Session.SetString("username", user.Username);
                 var userClaims = new List<Claim>()
                 {
                     new Claim(ClaimTypes.NameIdentifier , user.Username),
@@ -63,7 +63,7 @@ namespace PRN211_Grocery_store.Controllers
                 var userIdentity = new ClaimsIdentity(userClaims, "User Identity");
                 var userPrincipal = new ClaimsPrincipal(new[] { userIdentity });
                 await HttpContext.SignInAsync(userPrincipal);
-                return RedirectToAction("Index", "Products");
+                return RedirectToAction("Index", "Home");
             }
             catch (Exception ex)
             {
@@ -72,8 +72,11 @@ namespace PRN211_Grocery_store.Controllers
             }
         }
 
+        [Authorize]
         public async Task<IActionResult> Logout()
         {
+            HttpContext.Session.Remove("username");
+            HttpContext.Session.Remove("cart");
             await HttpContext.SignOutAsync();
             return RedirectToAction("Index", "Authentication");
         }

@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Session;
 using Microsoft.AspNetCore.Http;
 using PRN211_Grocery_store.Data.Entity;
 using PRN211_Grocery_store.Utils;
+using Microsoft.AspNetCore.Authorization;
+
 namespace PRN211_Grocery_store.Controllers
 {
     public class HomeController : Controller
@@ -32,6 +34,13 @@ namespace PRN211_Grocery_store.Controllers
         {
             ViewBag.products = productRepository.GetProducts();
             return View();
+        }
+
+        public IActionResult Search([FromForm] string searchValue)
+        {
+            ViewBag.products = productRepository.SearchProduct(searchValue);
+            ViewData["searchValue"] = searchValue;
+            return View("Index");
         }
 
         public IActionResult Privacy()
@@ -81,6 +90,7 @@ namespace PRN211_Grocery_store.Controllers
             }
             // set cart to session
             HttpContext.Session.SetString("cart", JsonConvert.SerializeObject(cart));
+            HttpContext.Session.SetInt32("itemNum", cart.Count());
             return RedirectToAction("Index");
         }
 
@@ -94,6 +104,7 @@ namespace PRN211_Grocery_store.Controllers
             }
             // set cart to session
             HttpContext.Session.SetString("cart", JsonConvert.SerializeObject(cart));
+            HttpContext.Session.SetInt32("itemNum", cart.Count());
             return RedirectToAction("Cart");
         }
 
@@ -107,6 +118,7 @@ namespace PRN211_Grocery_store.Controllers
             }
             // set cart to session
             HttpContext.Session.SetString("cart", JsonConvert.SerializeObject(cart));
+            HttpContext.Session.SetInt32("itemNum", cart.Count());
             return RedirectToAction("Cart");
         }
 
@@ -127,16 +139,18 @@ namespace PRN211_Grocery_store.Controllers
             }
             // set cart to session
             HttpContext.Session.SetString("cart", JsonConvert.SerializeObject(cart));
+            HttpContext.Session.SetInt32("itemNum", cart.Count());
             return RedirectToAction("Cart");
         }
 
+        [Authorize]
         public IActionResult Checkout()
         {
             List<Item> cart = (List<Item>)JsonConvert.DeserializeObject<IEnumerable<Item>>(HttpContext.Session.GetString("cart"));
             // add new order
             Order order = new()
             {
-                Username = "test123",
+                Username = HttpContext.Session.GetString("username"),
                 CreatedDate = DateTime.Now,
                 Status = "Pending",
                 OrderDetails = CartMapper.Instance.MapToOrderDetail(cart)
@@ -152,8 +166,11 @@ namespace PRN211_Grocery_store.Controllers
             // delete cart
             cart.Clear();
             HttpContext.Session.SetString("cart", JsonConvert.SerializeObject(cart));
+            HttpContext.Session.SetInt32("itemNum", 0);
             return RedirectToAction("Index");
         }
+
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
