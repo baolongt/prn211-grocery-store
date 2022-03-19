@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PRN211_Grocery_store.Data;
 using PRN211_Grocery_store.Data.Entity;
-
+using PRN211_Grocery_store.Models.ViewModels;
 namespace PRN211_Grocery_store.Controllers
 {
     public class UsersController : Controller
@@ -81,6 +81,34 @@ namespace PRN211_Grocery_store.Controllers
                 return NotFound();
             }
             return View(user);
+        }
+
+        [Authorize]
+        public ActionResult EditPassword()
+        {
+            return View();
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult EditPassword(PasswordChange password)
+        {
+            try
+            {
+                var user = _context.Users.Find(HttpContext.Session.GetString("username"));
+                if (ModelState.IsValid)
+                {
+                    user.Password = password.newPassword;
+                    _context.Users.Update(user);
+                    _context.SaveChanges();
+                }
+                return RedirectToAction("Details");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Message = ex.Message;
+                return RedirectToAction("Details");
+            }
         }
 
         [Authorize]
