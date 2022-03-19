@@ -70,7 +70,7 @@ namespace PRN211_Grocery_store.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,createdDate,username,status")] Order order)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,CreatedDate,Username,Status")] Order order)
         {
             if (id != order.Id)
             {

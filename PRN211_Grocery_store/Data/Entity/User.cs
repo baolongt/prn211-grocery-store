@@ -24,7 +24,6 @@ namespace PRN211_Grocery_store.Data.Entity
         public string Phone { get; set; }
 
         [Required]
-        [StringLength(100)]
         public bool IsAdmin { get; set; }
     }
 }

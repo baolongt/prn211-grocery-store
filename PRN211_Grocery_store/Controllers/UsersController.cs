@@ -88,20 +88,21 @@ namespace PRN211_Grocery_store.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Username,Password,Name,Email,Phone,IsAdmin")] User user)
+        public IActionResult UpdateUser([Bind("Username,Password,Name,Email,Phone")] User user)
         {
-            if (id != user.Username)
+            if (user == null)
             {
                 return NotFound();
             }
-
+            User updatedUser = _context.Users.Find(user.Username);
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(user);
-                    await _context.SaveChangesAsync();
+                    updatedUser.Name = user.Name;
+                    updatedUser.Phone = user.Phone;
+                    _context.Users.Update(updatedUser);
+                    _context.SaveChanges();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -114,9 +115,9 @@ namespace PRN211_Grocery_store.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details");
             }
-            return View(user);
+            return RedirectToAction("Details");
         }
 
         [Authorize(Roles = "Admin")]
@@ -135,7 +136,7 @@ namespace PRN211_Grocery_store.Controllers
                 return NotFound();
             }
 
-            return View(user);
+            return RedirectToAction("Index");
         }
 
         [Authorize(Roles = "Admin")]
