@@ -60,6 +60,14 @@ namespace PRN211_Grocery_store.Controllers
                     new Claim(ClaimTypes.Email, user.Email),
                     new Claim(ClaimTypes.Name, user.Name)
                 };
+                if (user.IsAdmin)
+                {
+                    userClaims.Add(new Claim(ClaimTypes.Role, "Admin"));
+                }
+                else
+                {
+                    userClaims.Add(new Claim(ClaimTypes.Role, "User"));
+                }
                 var userIdentity = new ClaimsIdentity(userClaims, "User Identity");
                 var userPrincipal = new ClaimsPrincipal(new[] { userIdentity });
                 await HttpContext.SignInAsync(userPrincipal);

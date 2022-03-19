@@ -23,7 +23,6 @@ namespace PRN211_Grocery_store.Controllers
             _orderRepository = new OrderRepository();
         }
 
-        [Authorize]
         // GET: Orders
         public async Task<IActionResult> Index()
         {
@@ -49,6 +48,7 @@ namespace PRN211_Grocery_store.Controllers
         }
 
         // GET: Orders/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -69,6 +69,7 @@ namespace PRN211_Grocery_store.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,createdDate,username,status")] Order order)
         {
             if (id != order.Id)

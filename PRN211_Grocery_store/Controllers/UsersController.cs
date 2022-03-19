@@ -21,7 +21,7 @@ namespace PRN211_Grocery_store.Controllers
             _context = context;
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         // GET: Users
         public async Task<IActionResult> Index()
         {
@@ -40,18 +40,17 @@ namespace PRN211_Grocery_store.Controllers
             {
                 return NotFound();
             }
-
             return View(user);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         // GET: Users/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         // POST: Users/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -72,11 +71,10 @@ namespace PRN211_Grocery_store.Controllers
         // GET: Users/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
-            if (id == null)
+            if (id == null || id != HttpContext.Session.GetString("username"))
             {
                 return NotFound();
             }
-
             var user = await _context.Users.FindAsync(id);
             if (user == null)
             {
@@ -121,7 +119,7 @@ namespace PRN211_Grocery_store.Controllers
             return View(user);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         // GET: Users/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
@@ -140,7 +138,7 @@ namespace PRN211_Grocery_store.Controllers
             return View(user);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         // POST: Users/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

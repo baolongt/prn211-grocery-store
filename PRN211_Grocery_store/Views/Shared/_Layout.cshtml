@@ -2,6 +2,7 @@
 @{
     var username = @Context.Session.GetString("username");
     var itemNum = @Context.Session.GetInt32("itemNum");
+    var isAdmin = User.IsInRole("Admin");
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -24,31 +25,48 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Cart">
-                                Cart @if(itemNum > 0){<span class="text-primary">(@itemNum)</span>}
-                            </a>
-                        </li>
-                        @if(username != null){
+                        @if(isAdmin){
                             <li>
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Orders" asp-action="Index">My Order</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Orders" asp-action="Index">Order</a>
                             </li>
                             <li>
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Details">Profile</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Products" asp-action="Index">Product</a>
+                            </li>
+                            <li>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Categories" asp-action="Index">Category</a>
                             </li>
                             <li>
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Authentication" asp-action="Logout">Logout</a>
                             </li>
                         }
-                        else
-                        {
-                            <li>
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Authentication" asp-action="Index">Login</a>
+                        else {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Cart">
+                                    Cart @if(itemNum > 0){<span class="text-primary">(@itemNum)</span>}
+                                </a>
+                            </li>
+                            @if(username != null && !isAdmin){
+                                <li>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Orders" asp-action="Index">My Order</a>
+                                </li>
+                                <li>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Details">Profile</a>
+                                </li>
+                                <li>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Authentication" asp-action="Logout">Logout</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Authentication" asp-action="Index">Login</a>
+                                </li>
+                            }
                         }
+                        
                     </ul>
                 </div>
             </div>
