@@ -1,23 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using Firebase.Storage;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PRN211_Grocery_store.Data;
 using PRN211_Grocery_store.Data.Entity;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting;
+using Firebase.Auth;
 
 namespace PRN211_Grocery_store.Controllers
 {
     public class ProductsController : Controller
-    {
+    {   
         private readonly ApplicationDBContext _context;
 
-        public ProductsController(ApplicationDBContext context)
+        private readonly IHostingEnvironment _env;
+
+        private static string ApiKey = "AIzaSyD_DE6GGVmxPbop7aOW0KuIbg071F8ySbA";
+        private static string Bucket = "dotnet-grocery-store.appspot.com";
+        private static string AuthEmail = "test@gmail.com";
+        private static string AuthPassword = "12345678";
+
+
+        public ProductsController(ApplicationDBContext context, IHostingEnvironment env)
         {
             _context = context;
+            _env = env;
         }
 
         [Authorize(Roles = "Admin")]
@@ -96,8 +111,61 @@ namespace PRN211_Grocery_store.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Create([Bind("id,categoryId,name,price,quantity")] Product product)
+        public async Task<ActionResult> Create([Bind("id,CategoryId,Name,Price,Quantity,ImageURL")] Product product, IFormFile uploadFile)
         {
+  
+            FileStream fs = null;
+            if (uploadFile.Length > 0)
+            {
+                string folderName = "firebaseFiles";
+                string path = Path.Combine(_env.WebRootPath, $"images/{folderName}");
+
+                if (Directory.Exists(path))
+                {
+                    using(fs = new FileStream(Path.Combine(path, uploadFile.FileName), FileMode.Create))
+                    {
+                        await uploadFile.CopyToAsync(fs);
+                    }
+
+                    fs = new FileStream(Path.Combine(path, uploadFile.FileName), FileMode.Open);
+
+                } else
+                {
+                    Directory.CreateDirectory(path);
+                }
+               
+                
+                var auth = new FirebaseAuthProvider(new FirebaseConfig(ApiKey));
+
+                var a = await auth.SignInWithEmailAndPasswordAsync(AuthEmail, AuthPassword);
+                 
+                var cancellation = new CancellationTokenSource();
+
+                var task = new FirebaseStorage(
+                    Bucket,
+                    new FirebaseStorageOptions
+                    {
+                        AuthTokenAsyncFactory = () => Task.FromResult(a.FirebaseToken),
+                        ThrowOnCancel = true
+                    })
+                    .Child("assets")
+                    .Child($"{uploadFile.FileName}")
+                    .PutAsync(fs, cancellation.Token);
+
+                try
+                {
+                     product.ImageURL = await task;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Exception was thrown: {0}", ex);
+                }
+
+
+            }
+
+           
+
             if (ModelState.IsValid)
             {
                 _context.Add(product);
@@ -199,5 +267,36 @@ namespace PRN211_Grocery_store.Controllers
         {
             return _context.Products.Any(e => e.Id == id);
         }
+
+        /*
+        public async void Upload(FileStream stream, string fileName)
+        {
+            var auth = new FirebaseAuthProvider(new FirebaseConfig(ApiKey));
+
+            var authen = await auth.SignInWithEmailAndPasswordAsync(AuthEmail, AuthPassword);
+
+            var cancellation = new CancellationTokenSource();
+
+            var task = new FirebaseStorage(
+                Bucket,
+                new FirebaseStorageOptions
+                {
+                    AuthTokenAsyncFactory = () => Task.FromResult(authen.FirebaseToken),
+                    ThrowOnCancel = true
+                })
+                .Child("images")
+                .Child(fileName)
+                .PutAsync(stream, cancellation.Token);
+
+            try
+            {
+                string link = await task;
+            } catch (Exception ex)
+            {
+                Console.WriteLine("Exception was thrown: {0}", ex);
+            }
+        }
+
+        */
     }
 }
