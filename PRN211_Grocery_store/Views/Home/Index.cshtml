@@ -23,14 +23,18 @@
             <div class="card-body">
                 <p>@p.Name</p>
                 <p>@p.Price</p>
-                @if (p.Quantity > 0)
+                @if (p.Quantity > 0 && !User.IsInRole("Admin"))
                 {
                     using(Html.BeginForm("AddToCart", "Home", new {@productId = p.Id}, FormMethod.Post))
                     {
-                        <button type="submit" class="btn btn-outline-primary">Add to Cart</button>
+                            <button type="submit" class="btn btn-outline-primary">Add to Cart</button>
                     }
                 }
-                else
+                   else if (p.Quantity > 0 && User.IsInRole("Admin"))
+                    {
+                        <button type="submit" class="btn btn-outline-primary" disabled>Add to Cart</button>
+                    }
+                    else
                 {
                     <button class="btn btn-outline-danger" disabled>Out of stock</button>
                 }

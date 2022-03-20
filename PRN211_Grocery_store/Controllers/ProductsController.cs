@@ -111,6 +111,7 @@ namespace PRN211_Grocery_store.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
+
         public async Task<ActionResult> Create([Bind("id,CategoryId,Name,Price,Quantity,ImageURL")] Product product, IFormFile uploadFile)
         {
   
@@ -184,7 +185,6 @@ namespace PRN211_Grocery_store.Controllers
             {
                 return NotFound();
             }
-
             var product = await _context.Products.FindAsync(id);
             if (product == null)
             {
@@ -194,25 +194,29 @@ namespace PRN211_Grocery_store.Controllers
             return View(product);
         }
 
-        [Authorize(Roles = "Admin")]
+        
         // POST: Products/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("id,categoryId,name,price,quantity")] Product product)
+        [Authorize(Roles = "Admin")]
+        public IActionResult EditProduct([Bind("Id,CategoryId,Name,Price,Quantity")] Product product)
         {
-            if (id != product.Id)
+            if (product == null)
             {
                 return NotFound();
             }
-
-            if (ModelState.IsValid)
-            {
+            Product product2 = _context.Products.FirstOrDefault(p => p.Id == product.Id);
+            if (ModelState.IsValid) { 
                 try
                 {
-                    _context.Update(product);
-                    await _context.SaveChangesAsync();
+                    product2.CategoryId = product.CategoryId;
+                    product2.Name = product.Name;
+                    product2.Quantity = product.Quantity;
+                    product2.Price = product.Price;
+                    _context.Products.Update(product2);
+                    _context.SaveChanges();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -228,7 +232,7 @@ namespace PRN211_Grocery_store.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["categoryId"] = new SelectList(_context.Categories, "Id", "Id", product.CategoryId);
-            return View(product);
+            return RedirectToAction("Index");
         }
 
         [Authorize(Roles = "Admin")]
